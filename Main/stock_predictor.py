@@ -33,9 +33,10 @@ class Stock_predictor():
     def prepare_data(self):
         X = self.features
         y = self.target
+        self.scaler = scaler 
 
         split = int(0.7 * len(X))
-        
+
         X_train = X[: split]
         X_test = X[: split]
 
@@ -65,7 +66,7 @@ class Stock_predictor():
         model.add(LSTM(
             units=number_units,
             return_sequences=True,
-            input_shape=(X_train.shape[1], 1)
+            input_shape=(self.X_train.shape[1], 1)
         ))
         model.add(Dropout(dropout_fraction))
 
@@ -79,7 +80,26 @@ class Stock_predictor():
 
         model.add(Dense(1))
 
-    def train_model():
+        model.compile(optimizer="adam", loss="mean_squared_error")
 
-    def evaluate_model():
+        self.model = model
+
+    def train_model(self, model_epochs = 30, model_batch_size = 90):
+        self.model.fit(self.X_train, self.y_train, epochs=model_epochs, shuffle=False, batch_size=model_batch_size, verbose=1)
+
+    def evaluate_model(self):
+        return self.model.evaluate(self.X_test, self.y_test)
+    
+    def display_predictions(self):
+        predicted = self.model.predict(self.X_test)
+        predicted_prices = scaler.inverse_transform(predicted)
+        real_prices = scaler.inverse_transform(y_test.reshape(-1, 1))
+        stocks = pd.DataFrame({
+            "Real": real_prices.ravel(),
+            "Predicted": predicted_prices.ravel(),
+        }, index = df.index[-len(real_prices): ])
+        stocks.plot() 
+
+
+
 
