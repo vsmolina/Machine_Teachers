@@ -10,7 +10,7 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout
 
 class Stock_predictor():
 
-    def __init__(self, window_size = 5, df):
+    def __init__(self, df, window_size = 5):
         self.window = window_size
         self.data = df
     
@@ -33,7 +33,7 @@ class Stock_predictor():
     def prepare_data(self):
         X = self.features
         y = self.target
-        self.scaler = scaler 
+        
 
         split = int(0.7 * len(X))
 
@@ -55,6 +55,7 @@ class Stock_predictor():
         self.y_test = scaler.transform(y_test)
         self.X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], 1))
         self.X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))
+        self.scaler = scaler
 
     def setup_model(self):
         model = Sequential()
@@ -90,16 +91,15 @@ class Stock_predictor():
     def evaluate_model(self):
         return self.model.evaluate(self.X_test, self.y_test)
     
-    def display_predictions(self):
+    def predictions_df(self):
         predicted = self.model.predict(self.X_test)
-        predicted_prices = scaler.inverse_transform(predicted)
-        real_prices = scaler.inverse_transform(y_test.reshape(-1, 1))
-        stocks = pd.DataFrame({
+        predicted_prices = self.scaler.inverse_transform(predicted)
+        real_prices = self.scaler.inverse_transform(self.y_test.reshape(-1, 1))
+        self.stocks = pd.DataFrame({
             "Real": real_prices.ravel(),
             "Predicted": predicted_prices.ravel(),
-        }, index = df.index[-len(real_prices): ])
-        stocks.plot() 
+        }, index = self.data.index[-len(real_prices): ])
+        return self.stocks
 
-
-
-
+    def plot_predictions(self):
+        self.stocks.plot()
