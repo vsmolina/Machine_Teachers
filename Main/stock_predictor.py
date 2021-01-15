@@ -103,3 +103,13 @@ class Stock_predictor():
 
     def plot_predictions(self):
         self.stocks.plot()
+    
+    def get_signals(self):
+        '''
+        when predicted and the real stock price are moving in the same direction, generate sell, buy, 
+        or hold position
+        '''
+        signal = False
+        self.sto
+
+        if self.stocks["Predicted"][-1] > self.stocks["Predicted"]

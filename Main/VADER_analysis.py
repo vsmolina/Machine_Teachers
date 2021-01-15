@@ -13,10 +13,10 @@ newsapi = NewsApiClient(api_key=api_key)
 
 class Vader_analysis():
 
-    def __init__(self, Key_word):
-        self.word = Key_word
+    def __init__(self, key_word):
+        self.word = key_word
 
-    def Fetch_All_News():
+    def fetch_all_news(self):
         headlines = newsapi.get_everything(
             q=self.word,
             language="en",
@@ -24,7 +24,8 @@ class Vader_analysis():
             sort_by="relevancy"
             )
         self.headlines = headlines
-    def Stock_Sentiment_Score_DF():
+
+    def stock_sentiment_score_df(self):
         sentiments = []
 
         for article in self.headlines["articles"]:
@@ -57,5 +58,6 @@ class Vader_analysis():
         cols = ["date", "text", "compound", "positive", "negative", "neutral"]
         df = df[cols]
         self.df = df
-    def Descriptive_Stats_DF():
+
+    def descriptive_stats_df(self):
         self.df.describe()
