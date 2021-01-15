@@ -17,6 +17,9 @@ class Vader_analysis():
         self.word = key_word
 
     def fetch_all_news(self):
+        analyzer = SentimentIntensityAnalyzer()
+        api_key = os.getenv("news_api")
+        newsapi = NewsApiClient(api_key=api_key)
         headlines = newsapi.get_everything(
             q=self.word,
             language="en",
@@ -24,7 +27,8 @@ class Vader_analysis():
             sort_by="relevancy"
             )
         self.headlines = headlines
-
+        self.analyzer = analyzer
+        
     def stock_sentiment_score_df(self):
         sentiments = []
 
@@ -32,7 +36,7 @@ class Vader_analysis():
             try:
                 text = article["content"]
                 date = article["publishedAt"][:10]
-                sentiment = analyzer.polarity_scores(text)
+                sentiment = self.analyzer.polarity_scores(text)
                 compound = sentiment["compound"]
                 pos = sentiment["pos"]
                 neu = sentiment["neu"]
@@ -58,6 +62,7 @@ class Vader_analysis():
         cols = ["date", "text", "compound", "positive", "negative", "neutral"]
         df = df[cols]
         self.df = df
+        return self.df
 
     def descriptive_stats_df(self):
-        self.df.describe()
+        self.stats = self.df.describe()
