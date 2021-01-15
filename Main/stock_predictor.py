@@ -57,7 +57,7 @@ class Stock_predictor():
         self.X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))
         self.scaler = scaler
 
-    def setup_model(self):
+    def setup_model(self, optimize = "adam", loss = "mean_squared_error"):
         model = Sequential()
 
         number_units = 30
@@ -81,7 +81,7 @@ class Stock_predictor():
 
         model.add(Dense(1))
 
-        model.compile(optimizer="adam", loss="mean_squared_error")
+        model.compile(optimizer= optimize, loss=loss)
 
         self.model = model
 
@@ -104,12 +104,15 @@ class Stock_predictor():
     def plot_predictions(self):
         self.stocks.plot()
     
-    def get_signals(self):
-        '''
-        when predicted and the real stock price are moving in the same direction, generate sell, buy, 
-        or hold position
-        '''
-        signal = False
-        self.sto
+    def get_signals(self, signal_percentage = 0.05):
+        self.stocks["Signal"] = 0.0
 
-        if self.stocks["Predicted"][-1] > self.stocks["Predicted"]
+        for stock in self.stocks:
+            if ((stock["Predicted"] / stock["Real"]) - 1) >= signal_percentage:
+                stock["Signal"] = 1.0
+            elif (1 - (stock["Predicted"] / stock["Real"])) >= signal_percentage:
+                stock["Signal"] = -1.0
+            else:
+                stock["Signal"] = 0.0 
+        return self.stocks
+             
