@@ -13,6 +13,8 @@ def initialize(cash=None):
     # Initialize Account
     account = {"balance": cash, "shares": 0}
 
+
+
     # Initialize dataframe
     df = fetch_data()
 
@@ -30,9 +32,9 @@ def fetch_data():
     """Fetches the latest prices."""
     print("Fetching data...")
     load_dotenv()
-    kraken_public_key = os.getenv("KRAKEN_PUBLIC_KEY")
-    kraken_secret_key = os.getenv("KRAKEN_SECRET_KEY")
-    kraken = ccxt.kraken({"apiKey": kraken_public_key, "secret": kraken_secret_key})
+    APCA_public_key = os.getenv("APCA_API_KEY")
+    APCA_secret_key = os.getenv("APCA_API_SECRET_KEY")
+    APCA = ccxt.k({"apiKey": kraken_public_key, "secret": kraken_secret_key})
 
     close = kraken.fetch_ticker("BTC/USD")["close"]
     datetime = kraken.fetch_ticker("BTC/USD")["datetime"]
